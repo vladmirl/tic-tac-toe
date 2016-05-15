@@ -1,0 +1,440 @@
+//tic-tac-toe;
+#define  _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <time.h>
+#include <stdlib.h>
+#include <string.h>
+using namespace std;
+class cross
+{
+
+public:
+	char X_;
+	cross()
+	{
+		X_ = 'x';
+	}
+	cross(char x)
+	{
+		X_ = x;
+	}
+	operator char()
+	{
+		return X_;
+	}
+
+	friend istream& operator >> (istream&is, cross&C)
+	{
+		cout << "\tenter any symbol on keyboard which is not 'n'\n(and then press key 'enter')\n";
+		is >> C.X_;
+		return is;
+	}
+
+	friend ostream& operator<<(ostream&os, const cross&C)
+	{
+		os << "X = " << C.X_ << "\n";
+
+		return os;
+	}
+	char GetX()
+	{
+		return X_;
+	}
+	~cross(){}
+};
+class zero
+{
+
+public:
+	char O;
+	zero()
+	{
+		O = '0';
+	}
+	zero(char z)
+	{
+		O = z;
+	}
+	operator char()
+	{
+		return O;
+	}
+	char GetZ()
+	{
+		return O;
+	}
+	~zero(){}
+
+	friend istream& operator >> (istream &is, zero&Z)
+	{
+		cout << "\tenter any symbol on keyboard which isn't 'n'\n";
+		is >> Z.O;
+		return is;
+	}
+
+	friend ostream& operator<<(ostream &os, const zero&Z)
+	{
+		os << "0 = " << Z.O << "\n";
+
+		return os;
+	}
+};
+class position
+{
+	char *arr;
+	int p;
+
+public:
+	char ovar;
+	char xvar;
+	char symb;
+	char gamer;
+
+	position()
+	{
+		p = strlen("abcdefghi") + 1;
+		arr = new char[p];
+		strcpy(arr, "abcdefghi");
+
+	}
+	void initial()
+	{
+		if (arr != NULL)
+			delete arr;
+		p = strlen("abcdefghi") + 1;
+		arr = new char[p];
+		strcpy(arr, "abcdefghi");
+	}
+	void SetGamer()
+	{
+		cout << "\t-- to play against computer press '1'\n\n\t-- to play against each other press '2'\n\n\t -- to exit press 'n'\n(and then press key 'enter')\n";
+		cin >> gamer;
+	}
+	void extract(char c)
+	{
+		for (int i = 0; i < p; i++)
+		{
+			if (arr[i] == c)
+			{
+				arr[i] = '@';
+			}
+		}
+	}
+	void change()
+	{
+		char temp;
+		temp = arr[0];
+		for (int i = 1; i < p; i++)
+		{
+			arr[i - 1] = arr[i];
+		}
+		arr[p - 1] = temp;
+	}
+	void show()
+	{
+		for (int i = 0; i < p; i++)
+		{
+			cout << arr[i] << " ";
+		}
+	}
+	char Getgamer(char s)
+	{
+		if (s == 'n')
+			return s;
+		else
+			SetGamer();
+
+		while (gamer != '1' && gamer != '2'&&gamer != 'n')
+		{
+			cout << "\t\t??? you entered incorrect simbol, try again or press 'n' to exit:\n";
+			SetGamer();
+		}
+		return gamer;
+	}
+	char paste()
+	{
+		char temp;
+		for (int i = 0; i < p; i++)
+		{
+			if (arr[i] != '@'&&arr[i] != '\0'&& arr[i] != ovar&&arr[i] != xvar)
+			{
+				temp = arr[i];
+				break;
+			}
+		}
+		return temp;
+	}
+	operator char()
+	{
+		return symb;
+	}
+	char GetSymb()
+	{
+		return symb;
+	}
+	friend istream& operator >> (istream &is, position&P)
+	{
+
+		is >> P.symb;
+		return is;
+	}
+
+	friend ostream& operator<<(ostream &os, const  position&P)
+	{
+		os << "position = " << P.symb << "\n";
+
+		return os;
+	}
+	~position()
+	{
+		/*delete[]arr;*/
+	}
+};
+char enter(cross X, zero Z, char simbol)
+{
+	const int n = 3;
+	char mas[n][n] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i' };
+
+	do
+	{
+		cout << "\t\t\tThe game TIC-TAC-TOE\n\n\t-- to start press key 'y'\n\n\t-- to exit press key 'n'\n(and then press key 'enter')\n";
+		cin >> simbol;
+		if (simbol == 'y')
+		{
+			cout << "\t\tThe game TIC-TAC-TOE\n\n\t\t\t game menu : \n\nenter symbol : \n\n\tpress key " << X.GetX() << " - to play with cross(player 1)"
+				<< X << "\n\n\tor key " << Z.GetZ() << " - to play with zero(player 2) " << Z << "\n\n\tkey n - to exit\n(and then press key 'enter')\n";
+			cin >> simbol;
+		}
+		else if (simbol != 'n')
+		{
+			cout << "??? error, you entered incorrect symbol, please try again or press 'n'- to exit:\n(and then press key 'enter')\n";
+			continue;
+		}
+		if (simbol == Z || simbol == X)
+		{
+			break;
+		}
+		else if (simbol != 'n')
+		{
+			cout << "??? error, you entered incorrect simbol, please try again or press 'n'- to exit:\n(and then press key 'enter')\n";
+			cin >> simbol;
+			if (simbol == Z || simbol == X)
+			{
+				break;
+			}
+			else
+				continue;
+		}
+	} while (simbol != 'n');
+
+	return simbol;
+}
+void logics(cross X, zero Z, char simbol, position P)
+{
+	if (simbol != 'n')
+		if (P.gamer == '1')
+			cout << "\t\tYou VS Computer\n\t\tyour simbol = " << simbol << "\n\n";
+		else if (P.gamer == '2')
+			cout << "person VS person" << endl << endl;
+		else
+		{
+			P.symb = 'n';
+		}
+		const int n = 3;
+		char mas[n][n] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i' };
+		int count = 0;
+		if (simbol != 'n')
+		{
+			for (int i = 0; i < n; i++)
+			{
+				for (int j = 0; j < n; j++)
+				{
+					cout << "   " << mas[i][j];
+					if (X == mas[i][j])
+						count++;
+					if (Z == mas[i][j])
+						count++;
+				}
+				cout << endl << endl;
+			}
+			cout << endl;
+
+			bool won = false;
+			bool simb = false;
+			bool again = false;
+			bool comp = false;
+			int player;
+			int step = rand() % 5;
+			if (simbol == X)
+			{
+				simb = true;
+			}
+			else if (simbol == Z)
+			{
+				simb = false;
+			}
+			while (count <9 && !won && P != 'n')
+			{
+				if (simb&&!again)
+				{
+					player = 1;
+					simbol = X;
+					simb = false;
+				}
+				else if (!simb&&!again)
+				{
+					player = 2;
+					simbol = Z;
+					simb = true;
+				}
+				again = false;
+
+				cout << "\npress a key on your keyboard, which is equal to symbol on the table (from 'a' to 'i')\n\n";
+				cout << " player " << player << ": input a symbol which is not '" << X.GetX() << "' and isn't '" << Z.GetZ()
+					<< "'\n to exit press 'n'\n(and then press key 'enter')\n ";
+
+				if (simbol == X&&P.gamer == '1'&&!comp || simbol == Z&&P.gamer == '1'&&!comp)
+				{
+					cin >> P;
+					comp = true;
+				}
+				else if (simbol == Z&&P.gamer == '1'&&comp || simbol == X&&P.gamer == '1'&&comp)
+				{
+					P.symb = P.paste();
+					comp = false;
+				}
+
+				if (P.gamer != '1')
+					cin >> P;
+				bool equal = false;
+
+				for (int i = 0; i < n; i++)
+				{
+					for (int j = 0; j < n; j++)
+					{
+						if (P == mas[i][j] && P != Z&&P != X)
+						{
+							P.extract(mas[i][j]);
+							if (step % 2 == 0 && mas[i + 1][j] != simbol&& mas[i][j - 1] != simbol)
+							{
+								P.change();
+								P.change();
+							}
+							else if (step % 2 == 0 || mas[i][j + 1] == simbol)
+							{
+								P.change();
+							}
+							mas[i][j] = simbol;
+							count++;
+							equal = true;
+						}
+						else if (P == 'n')
+						{
+							count = 10;
+							equal = true;
+						}
+						cout << "   " << mas[i][j];
+					}
+					cout << endl << endl;
+				}
+				/*P.show();*/
+				if (!equal)
+				{
+					cout << "??? error, you entered incorrect simbol, pleas try again \n to exit press 'n'\n(and then press key 'enter')\n ";
+					cout << endl;
+					again = true;
+					comp = false;
+				}
+
+				if (equal&&!again)
+				{
+					for (int i = 0; i < n; ++i)
+					{
+						for (int j = 0; j < n; ++j)
+
+						{
+							if (mas[0][0] == mas[0][1] && mas[0][1] == mas[0][2] ||
+								mas[1][0] == mas[1][1] && mas[1][1] == mas[1][2] ||
+								mas[2][0] == mas[2][1] && mas[2][1] == mas[2][2])
+							{
+								won = true;
+								break;
+							}
+							else if (mas[0][0] == mas[1][0] && mas[1][0] == mas[2][0] ||
+								mas[0][1] == mas[1][1] && mas[1][1] == mas[2][1] ||
+								mas[0][2] == mas[1][2] && mas[1][2] == mas[2][2])
+							{
+								won = true;
+								break;
+							}
+							else if (mas[0][0] == mas[1][1] && mas[0][0] == mas[2][2] ||
+								mas[2][0] == mas[0][2] && mas[2][0] == mas[1][1])
+							{
+								won = true;
+								break;
+							}
+						}
+						cout << endl;
+					}
+					if (won)
+						cout << "\t\t\tplayer " << player << " won!!!\n\n";
+					if (count == 9 && !won)
+					{
+						cout << "\n\t\t ~ standoff ~\n\n";
+						break;
+					}
+					else if (count == 9 && !won)
+					{
+						cout << "\n\n\t\t\tgame over\n";
+					}
+				}
+			}
+		}
+		else
+			cout << "\t\t\t game over\n\n";
+}
+char game(cross A, zero B, position P, char s)
+{
+	if (A == B || A == 'n' || B == 'n')
+	{
+		cout << "\t??? error, you entered incorrect simbol\n\n";
+		return s;
+	}
+	else
+	{
+		s = enter(A, B, s);
+		P.Getgamer(s);
+		logics(A, B, s, P);
+		P.initial();
+		cout << "\tto ...continue press any key\n\n to exit press 'n'\n(and then press key 'enter')\n";
+		cin >> s;
+		return s;
+	}
+}
+
+void main()
+{
+	srand(time(NULL));
+	cross A, B('$'), X;
+	zero C, D('%'), Y;
+	position P;
+	char sign = 'a';
+	while (sign != 'n')
+	{
+		sign=game(A, C, P, sign);
+		if (sign == 'n')
+			break;
+		sign=game(B, D, P, sign);
+		if (sign == 'n')
+			break;
+		cin >> X >> Y;
+		cout << X << Y;
+		P.xvar = X;
+		P.ovar = Y;
+		sign=game(X, Y, P, sign);
+		if (sign == 'n')
+			break;
+	}
+	cout << "\t\tthank you for the game\n\n\tGood - buy...\n";
+	system("pause");
+}
